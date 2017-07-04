@@ -1,7 +1,7 @@
 
 # read the command line arguments
-set k 4
-set KK 20
+set k 4 ;#k is for fat-tree
+set KK 20 ;#KK is ECN ssthreshhold
 
 set stoptime 1
 
@@ -170,13 +170,9 @@ for {set p 0} {$p < $k} {incr p} {
 }
 }
  
-# write the switch parameter to c++ space, and other initializations
-
-
-set start_time 0
  
 # generating traffic
-set fidnumber 0
+set fidnumber 0  ;#tcp id start from 0
 for {set p 0} {$p < $k} {incr p } {
   for {set s 0} {$s < $k/2} {incr s} {
      for {set i 0} {$i < $k/2} {incr i} {
@@ -207,9 +203,8 @@ for {set p 0} {$p < $k} {incr p } {
             $ftp($p,$s,$i) set packetSize_ $pktsize
             $ftp($p,$s,$i) set shape_ 1.5
  
-            #set stime [ expr $start_time + ($i + $s * $k) / 100.0 ] 
-            #$ns at $stime "$e($p,$s,$i) start"
-			$ns at 0.6 "$ftp($p,$s,$i) start"
+           
+	    $ns at 0.6 "$ftp($p,$s,$i) start"
             $ns at $stoptime "$ftp($p,$s,$i) stop"         
 }     
 }
@@ -240,7 +235,7 @@ proc recordCwnd {} {
         $ns at [expr $now+$cwndInterval] "recordCwnd"
 }
 
-
+#record queue
 set qfile1 [open queue1.tr w]
 set qmon1 [$ns monitor-queue $cs(0,0) $as(0,0) $qfile1 0.001]
 [$ns link $cs(0,0) $as(0,0)] queue-sample-timeout
